@@ -240,21 +240,17 @@
   toggleDesktop.addEventListener("change", () => syncTheme(toggleDesktop.checked));
   toggleMobile.addEventListener("change", () => syncTheme(toggleMobile.checked));
 
-  // ✅ Smooth Scroll to Results on Form Submit
-  const form = document.querySelector("form");
-  const resultsContainer = document.querySelector(".grid, .text-gray-400.text-center");
-
-  if (form) {
-    form.addEventListener("submit", () => {
-      // small delay to let results load
+  // ✅ Auto Scroll Down when results are displayed
+  window.addEventListener("load", () => {
+    // check kung may lumabas na project ideas (may .grid container)
+    const resultsSection = document.querySelector(".grid");
+    if (resultsSection) {
+      // small delay to ensure full render
       setTimeout(() => {
-        const results = document.querySelector(".grid, .text-gray-400.text-center");
-        if (results) {
-          results.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 800); // delay para makapag-render muna ang results
-    });
-  }
+        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 400);
+    }
+  });
 </script>
 
 </body>
