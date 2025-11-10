@@ -209,36 +209,53 @@
     </div>
   </footer>
 
-  <script>
-    const body = document.body;
+<script>
+  const body = document.body;
 
-    const toggleDesktop = document.getElementById("themeToggle");
-    const iconDesktop = document.getElementById("themeIcon");
+  const toggleDesktop = document.getElementById("themeToggle");
+  const iconDesktop = document.getElementById("themeIcon");
 
-    const toggleMobile = document.getElementById("themeToggleMobile");
-    const iconMobile = document.getElementById("themeIconMobile");
+  const toggleMobile = document.getElementById("themeToggleMobile");
+  const iconMobile = document.getElementById("themeIconMobile");
 
-    // Load theme from localStorage
-    if (localStorage.getItem("theme") === "dark") {
-      body.classList.add("dark-mode");
-      toggleDesktop.checked = true;
-      toggleMobile.checked = true;
-      iconDesktop.className = "bi bi-moon-stars text-white text-lg";
-      iconMobile.className = "bi bi-moon-stars text-white text-lg";
-    }
+  // Load theme from localStorage
+  if (localStorage.getItem("theme") === "dark") {
+    body.classList.add("dark-mode");
+    toggleDesktop.checked = true;
+    toggleMobile.checked = true;
+    iconDesktop.className = "bi bi-moon-stars text-white text-lg";
+    iconMobile.className = "bi bi-moon-stars text-white text-lg";
+  }
 
-    // Function to toggle both
-    function syncTheme(dark) {
-      body.classList.toggle("dark-mode", dark);
-      iconDesktop.className = dark ? "bi bi-moon-stars text-white text-lg" : "bi bi-sun text-yellow-400 text-lg";
-      iconMobile.className = dark ? "bi bi-moon-stars text-white text-lg" : "bi bi-sun text-yellow-400 text-lg";
-      toggleDesktop.checked = dark;
-      toggleMobile.checked = dark;
-      localStorage.setItem("theme", dark ? "dark" : "light");
-    }
+  // Function to toggle both
+  function syncTheme(dark) {
+    body.classList.toggle("dark-mode", dark);
+    iconDesktop.className = dark ? "bi bi-moon-stars text-white text-lg" : "bi bi-sun text-yellow-400 text-lg";
+    iconMobile.className = dark ? "bi bi-moon-stars text-white text-lg" : "bi bi-sun text-yellow-400 text-lg";
+    toggleDesktop.checked = dark;
+    toggleMobile.checked = dark;
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  }
 
-    toggleDesktop.addEventListener("change", () => syncTheme(toggleDesktop.checked));
-    toggleMobile.addEventListener("change", () => syncTheme(toggleMobile.checked));
-  </script>
+  toggleDesktop.addEventListener("change", () => syncTheme(toggleDesktop.checked));
+  toggleMobile.addEventListener("change", () => syncTheme(toggleMobile.checked));
+
+  // ✅ Smooth Scroll to Results on Form Submit
+  const form = document.querySelector("form");
+  const resultsContainer = document.querySelector(".grid, .text-gray-400.text-center");
+
+  if (form) {
+    form.addEventListener("submit", () => {
+      // small delay to let results load
+      setTimeout(() => {
+        const results = document.querySelector(".grid, .text-gray-400.text-center");
+        if (results) {
+          results.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 800); // delay para makapag-render muna ang results
+    });
+  }
+</script>
+
 </body>
 </html>
