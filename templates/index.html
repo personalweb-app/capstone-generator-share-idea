@@ -180,7 +180,7 @@
         {% else %}
           <div class="text-gray-400 text-center mt-10 flex flex-col items-center gap-2">
             <i class="bi bi-search text-3xl"></i>
-            <span class="text-sm sm:text-base">Your capstone project share ideas will be shown here.</span>
+            <span class="text-sm sm:text-base">Your capstone project Share ideas will be shown here.</span>
           </div>
         {% endif %}
       </div>
@@ -232,7 +232,7 @@
   const toggleMobile = document.getElementById("themeToggleMobile");
   const iconMobile = document.getElementById("themeIconMobile");
 
-  // 🌙 Load dark mode
+  // 🌙 Load saved theme
   if (localStorage.getItem("theme") === "dark") {
     body.classList.add("dark-mode");
     toggleDesktop.checked = true;
@@ -241,11 +241,15 @@
     iconMobile.className = "bi bi-moon-stars text-white text-lg";
   }
 
-  // 🌞 Theme sync
+  // 🌞 Sync both toggles
   function syncTheme(dark) {
     body.classList.toggle("dark-mode", dark);
-    iconDesktop.className = dark ? "bi bi-moon-stars text-white text-lg" : "bi bi-sun text-yellow-400 text-lg";
-    iconMobile.className = dark ? "bi bi-moon-stars text-white text-lg" : "bi bi-sun text-yellow-400 text-lg";
+    iconDesktop.className = dark
+      ? "bi bi-moon-stars text-white text-lg"
+      : "bi bi-sun text-yellow-400 text-lg";
+    iconMobile.className = dark
+      ? "bi bi-moon-stars text-white text-lg"
+      : "bi bi-sun text-yellow-400 text-lg";
     toggleDesktop.checked = dark;
     toggleMobile.checked = dark;
     localStorage.setItem("theme", dark ? "dark" : "light");
@@ -254,23 +258,23 @@
   toggleDesktop.addEventListener("change", () => syncTheme(toggleDesktop.checked));
   toggleMobile.addEventListener("change", () => syncTheme(toggleMobile.checked));
 
-  // ✅ Validation + Scroll
+  // ✅ FORM VALIDATION + MOBILE SCROLL
   const form = document.querySelector("form");
 
   if (form) {
-    const industry = document.getElementById("industry");
-    const ptype = document.getElementById("ptype");
-    const numResults = document.getElementById("num_results");
+    const industry = form.querySelector("select[name='industry']");
+    const ptype = form.querySelector("select[name='ptype']");
+    const numResults = form.querySelector("input[name='num_results']");
 
     const industryError = document.getElementById("industry-error");
     const ptypeError = document.getElementById("ptype-error");
-    const numError = document.getElementById("num-error");
+    const numError = document.getElementById("num_results-error");
 
-    // 🧹 Clear validation when user interacts
-    [industry, ptype, numResults].forEach(field => {
+    // Clear errors when user changes input
+    [industry, ptype, numResults].forEach((field) => {
       field.addEventListener("input", () => {
         field.classList.remove("border-red-500");
-        const err = document.getElementById(field.id + "-error");
+        const err = document.getElementById(field.name + "-error");
         if (err) err.classList.add("hidden");
       });
     });
@@ -285,7 +289,7 @@
         industryError.classList.remove("hidden");
       }
 
-      // Project type validation
+      // Project Type validation
       if (!ptype.value) {
         valid = false;
         ptype.classList.add("border-red-500");
@@ -297,16 +301,16 @@
       if (isNaN(num) || num < 1 || num > 20) {
         valid = false;
         numResults.classList.add("border-red-500");
+        numError.textContent = "Please enter a valid number (1–20).";
         numError.classList.remove("hidden");
       }
 
-      // Stop submit if invalid
       if (!valid) {
         e.preventDefault();
         return;
       }
 
-      // ✅ Scroll logic (mobile only)
+      // Mobile-only scroll when results appear
       const observer = new MutationObserver(() => {
         const results = document.querySelector(".grid");
         const isMobile = window.innerWidth < 768;
@@ -314,7 +318,7 @@
         if (results && isMobile) {
           setTimeout(() => {
             results.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 300);
+          }, 400);
           observer.disconnect();
         }
       });
@@ -322,7 +326,19 @@
       observer.observe(document.body, { childList: true, subtree: true });
     });
   }
+
+  // Scroll automatically on page load if results exist and mobile
+  window.addEventListener("load", () => {
+    const resultsSection = document.querySelector(".grid");
+    const isMobile = window.innerWidth < 768;
+    if (resultsSection && isMobile) {
+      setTimeout(() => {
+        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 400);
+    }
+  });
 </script>
+
 
 </body>
 </html>
