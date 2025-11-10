@@ -34,40 +34,43 @@
         </div>
 
         <form method="POST" class="space-y-5">
-          <!-- Industry -->
-          <div>
-            <label class="block text-gray-600 font-medium mb-1 flex items-center gap-2 text-sm sm:text-base">
-              <i class="bi bi-building"></i> Industry
-            </label>
-            <div class="relative">
-              <select name="industry" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 appearance-none text-sm sm:text-base bg-white text-gray-800">
-                <option value="">All Industries</option>
-                {% for item in industries %}
-                  <option value="{{ item }}" {% if selected.industry==item %}selected{% endif %}>{{ item }}</option>
-                {% endfor %}
-              </select>
-              <i class="bi bi-chevron-down absolute right-3 top-4 text-gray-400 pointer-events-none"></i>
-            </div>
-          </div>
 
-          <!-- Project Type -->
-          <div>
-            <label class="block text-gray-600 font-medium mb-1 flex items-center gap-2 text-sm sm:text-base">
-              <i class="bi bi-gear"></i> Project Type
-            </label>
-            <div class="relative">
-              <select name="ptype" id="ptype" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 appearance-none text-sm sm:text-base bg-white text-gray-800">
-                <option value="">All Project Types</option>
-                {% for type in project_types %}
-                  <option value="{{ type }}" {% if selected.ptype==type %}selected{% endif %}>{{ type }}</option>
-                {% endfor %}
-              </select>
-              <i class="bi bi-chevron-down absolute right-3 top-4 text-gray-400 pointer-events-none"></i>
-            </div>
-          </div>
+              <!-- Industry -->
+      <div id="industry-wrapper">
+        <label class="block text-gray-600 font-medium mb-1 flex items-center gap-2 text-sm sm:text-base">
+          <i class="bi bi-building"></i> Industry
+        </label>
+        <div class="relative">
+          <select name="industry" id="industry" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 appearance-none text-sm sm:text-base bg-white text-gray-800">
+            <option value="">All Industries</option>
+            {% for item in industries %}
+              <option value="{{ item }}" {% if selected.industry==item %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+          </select>
+          <i class="bi bi-chevron-down absolute right-3 top-4 text-gray-400 pointer-events-none"></i>
+        </div>
+        <p id="industry-error" class="hidden text-red-500 text-xs mt-1">Please select an industry.</p>
+      </div>
+
+      <!-- Project Type -->
+      <div id="ptype-wrapper">
+        <label class="block text-gray-600 font-medium mb-1 flex items-center gap-2 text-sm sm:text-base">
+          <i class="bi bi-gear"></i> Project Type
+        </label>
+        <div class="relative">
+          <select name="ptype" id="ptype" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 appearance-none text-sm sm:text-base bg-white text-gray-800">
+            <option value="">All Project Types</option>
+            {% for type in project_types %}
+              <option value="{{ type }}" {% if selected.ptype==type %}selected{% endif %}>{{ type }}</option>
+            {% endfor %}
+          </select>
+          <i class="bi bi-chevron-down absolute right-3 top-4 text-gray-400 pointer-events-none"></i>
+        </div>
+        <p id="ptype-error" class="hidden text-red-500 text-xs mt-1">Please select a project type.</p>
+      </div>
 
           <!-- Difficulty -->
-          <div>
+          <div id="difficulty-wrapper">
             <label class="block text-gray-600 font-medium mb-1 flex items-center gap-2 text-sm sm:text-base">
               <i class="bi bi-bar-chart"></i> Difficulty
             </label>
@@ -81,13 +84,25 @@
             </div>
           </div>
 
-          <!-- Number of Results -->
-          <div>
-            <label class="block text-gray-600 font-medium mb-1 flex items-center gap-2 text-sm sm:text-base">
-              <i class="bi bi-list-ol"></i> Number of Ideas
-            </label>
-            <input type="number" name="num_results" min="1" max="20" value="5" class="w-full p-3 border rounded-lg text-sm sm:text-base bg-white text-gray-800">
-          </div>
+     <!-- Number of Results -->
+        <div id="num-wrapper">
+          <label class="block text-gray-600 font-medium mb-1 flex items-center gap-2 text-sm sm:text-base">
+            <i class="bi bi-list-ol"></i> Number of Ideas
+          </label>
+          <input 
+            type="number" 
+            name="num_results" 
+            id="num_results"
+            min="1" 
+            max="20" 
+            placeholder="Enter number of ideas..." 
+            class="w-full p-3 border rounded-lg text-sm sm:text-base bg-white text-gray-800"
+          >
+          <p id="num-error" class="hidden text-red-500 text-xs mt-1">
+            Please enter a valid number of ideas (1–20).
+          </p>
+        </div>
+
 
           <!-- Generate Button -->
           <button type="submit"
@@ -101,7 +116,7 @@
       <div class="w-full md:w-2/3 bg-gray-50 rounded-2xl p-5 shadow-sm transition-colors duration-500">
         <div class="flex justify-between items-center mb-4 sm:mb-6">
           <h1 class="text-2xl sm:text-3xl font-bold text-green-700 flex items-center gap-2">
-            <i class="bi bi-brightness-high"></i> Capstone Project Generator Idea
+            <i class="bi bi-brightness-high"></i> Capstone Idea Generator
           </h1>
 
           <!-- ✅ Dark Mode Toggle (Desktop Version) -->
@@ -116,7 +131,7 @@
           </div>
         </div>
 
-        <p class="text-gray-500 text-center mb-4 text-sm sm:text-base">Discover your great capstone project idea!</p>
+        <p class="text-gray-500 text-center mb-4 text-sm sm:text-base">Discover your next great project idea!</p>
 
         {% if results %}
           <div class="grid gap-4">
@@ -214,11 +229,10 @@
 
   const toggleDesktop = document.getElementById("themeToggle");
   const iconDesktop = document.getElementById("themeIcon");
-
   const toggleMobile = document.getElementById("themeToggleMobile");
   const iconMobile = document.getElementById("themeIconMobile");
 
-  // Load theme from localStorage
+  // 🌙 Load dark mode
   if (localStorage.getItem("theme") === "dark") {
     body.classList.add("dark-mode");
     toggleDesktop.checked = true;
@@ -227,7 +241,7 @@
     iconMobile.className = "bi bi-moon-stars text-white text-lg";
   }
 
-  // Function to toggle both
+  // 🌞 Theme sync
   function syncTheme(dark) {
     body.classList.toggle("dark-mode", dark);
     iconDesktop.className = dark ? "bi bi-moon-stars text-white text-lg" : "bi bi-sun text-yellow-400 text-lg";
@@ -240,17 +254,74 @@
   toggleDesktop.addEventListener("change", () => syncTheme(toggleDesktop.checked));
   toggleMobile.addEventListener("change", () => syncTheme(toggleMobile.checked));
 
-  // ✅ Auto Scroll Down when results are displayed
-  window.addEventListener("load", () => {
-    // check kung may lumabas na project ideas (may .grid container)
-    const resultsSection = document.querySelector(".grid");
-    if (resultsSection) {
-      // small delay to ensure full render
-      setTimeout(() => {
-        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 400);
-    }
-  });
+  // ✅ Validation + Scroll
+  const form = document.querySelector("form");
+
+  if (form) {
+    const industry = document.getElementById("industry");
+    const ptype = document.getElementById("ptype");
+    const numResults = document.getElementById("num_results");
+
+    const industryError = document.getElementById("industry-error");
+    const ptypeError = document.getElementById("ptype-error");
+    const numError = document.getElementById("num-error");
+
+    // 🧹 Clear validation when user interacts
+    [industry, ptype, numResults].forEach(field => {
+      field.addEventListener("input", () => {
+        field.classList.remove("border-red-500");
+        const err = document.getElementById(field.id + "-error");
+        if (err) err.classList.add("hidden");
+      });
+    });
+
+    form.addEventListener("submit", (e) => {
+      let valid = true;
+
+      // Industry validation
+      if (!industry.value) {
+        valid = false;
+        industry.classList.add("border-red-500");
+        industryError.classList.remove("hidden");
+      }
+
+      // Project type validation
+      if (!ptype.value) {
+        valid = false;
+        ptype.classList.add("border-red-500");
+        ptypeError.classList.remove("hidden");
+      }
+
+      // Number validation
+      const num = parseInt(numResults.value.trim());
+      if (isNaN(num) || num < 1 || num > 20) {
+        valid = false;
+        numResults.classList.add("border-red-500");
+        numError.classList.remove("hidden");
+      }
+
+      // Stop submit if invalid
+      if (!valid) {
+        e.preventDefault();
+        return;
+      }
+
+      // ✅ Scroll logic (mobile only)
+      const observer = new MutationObserver(() => {
+        const results = document.querySelector(".grid");
+        const isMobile = window.innerWidth < 768;
+
+        if (results && isMobile) {
+          setTimeout(() => {
+            results.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 300);
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
+  }
 </script>
 
 </body>
