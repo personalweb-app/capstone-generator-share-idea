@@ -258,7 +258,7 @@
   toggleDesktop.addEventListener("change", () => syncTheme(toggleDesktop.checked));
   toggleMobile.addEventListener("change", () => syncTheme(toggleMobile.checked));
 
-  // ✅ FORM VALIDATION + MOBILE SCROLL
+  // ✅ FORM VALIDATION + AUTO SCROLL
   const form = document.querySelector("form");
 
   if (form) {
@@ -266,11 +266,19 @@
     const ptype = form.querySelector("select[name='ptype']");
     const numResults = form.querySelector("input[name='num_results']");
 
-    const industryError = document.getElementById("industry-error");
-    const ptypeError = document.getElementById("ptype-error");
-    const numError = document.getElementById("num_results-error");
+    // 🧾 Add error placeholders dynamically
+    ["industry", "ptype", "num_results"].forEach((id) => {
+      const field = form.querySelector(`[name='${id}']`);
+      if (field && !document.getElementById(id + "-error")) {
+        const msg = document.createElement("p");
+        msg.id = id + "-error";
+        msg.className = "hidden text-red-500 text-sm mt-1";
+        msg.textContent = "This field is required.";
+        field.insertAdjacentElement("afterend", msg);
+      }
+    });
 
-    // Clear errors when user changes input
+    // 🧹 Clear error when changed
     [industry, ptype, numResults].forEach((field) => {
       field.addEventListener("input", () => {
         field.classList.remove("border-red-500");
@@ -279,6 +287,7 @@
       });
     });
 
+    // 🧩 Handle submit validation
     form.addEventListener("submit", (e) => {
       let valid = true;
 
@@ -286,14 +295,14 @@
       if (!industry.value) {
         valid = false;
         industry.classList.add("border-red-500");
-        industryError.classList.remove("hidden");
+        document.getElementById("industry-error").classList.remove("hidden");
       }
 
       // Project Type validation
       if (!ptype.value) {
         valid = false;
         ptype.classList.add("border-red-500");
-        ptypeError.classList.remove("hidden");
+        document.getElementById("ptype-error").classList.remove("hidden");
       }
 
       // Number validation
@@ -301,8 +310,9 @@
       if (isNaN(num) || num < 1 || num > 20) {
         valid = false;
         numResults.classList.add("border-red-500");
-        numError.textContent = "Please enter a valid number (1–20).";
-        numError.classList.remove("hidden");
+        const msg = document.getElementById("num_results-error");
+        msg.textContent = "Please enter a valid number (1–20).";
+        msg.classList.remove("hidden");
       }
 
       if (!valid) {
@@ -310,12 +320,10 @@
         return;
       }
 
-      // Mobile-only scroll when results appear
+      // ✅ Wait for output to load, then scroll down smoothly
       const observer = new MutationObserver(() => {
         const results = document.querySelector(".grid");
-        const isMobile = window.innerWidth < 768;
-
-        if (results && isMobile) {
+        if (results) {
           setTimeout(() => {
             results.scrollIntoView({ behavior: "smooth", block: "start" });
           }, 400);
@@ -327,17 +335,17 @@
     });
   }
 
-  // Scroll automatically on page load if results exist and mobile
+  // ✅ Also scroll down automatically if results already visible (e.g., page reload)
   window.addEventListener("load", () => {
     const resultsSection = document.querySelector(".grid");
-    const isMobile = window.innerWidth < 768;
-    if (resultsSection && isMobile) {
+    if (resultsSection) {
       setTimeout(() => {
         resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 400);
     }
   });
 </script>
+
 
 
 </body>
